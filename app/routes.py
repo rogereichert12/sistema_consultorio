@@ -91,3 +91,17 @@ def criar_agendamento():
     db.session.add(agendamento)
     db.session.commit()
     return jsonify({"message": "Agendamento criado com sucesso!"}), 201
+
+# Listagem de agendamentos
+@app_routes.route('/agendamentos', methods=['GET'])
+def listar_agendamentos():
+    agendamentos = Agendamento.query.all()
+    return jsonify([{
+        "id": a.id,
+        "data": a.data.strftime('%Y-%m-%d'),
+        "horario": a.horario.strftime('%H:%M:%S'),
+        "paciente_id": a.paciente_id,
+        "medico_id": a.medico_id,
+        "status": a.status
+    } for a in agendamentos]), 200
+
