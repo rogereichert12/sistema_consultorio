@@ -1,8 +1,16 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 from .models import db, Paciente, Medico, Agendamento
 
 # Definição do Blueprint
 app_routes = Blueprint('app_routes', __name__)
+
+# Rota para a página inicial
+@app_routes.route('/', methods=['GET'])
+def home():
+    """
+    Serve a página inicial do sistema.
+    """
+    return render_template('index.html')
 
 # ---------------------------
 # Autenticação

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Consultório Médico</title>
+  <!-- Semantic UI CSS CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+  <!-- Font Awesome CSS CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Global Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Background and Centering */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f7faff; /* Fundo neutro e suave */
+    }
+
+    /* Login Container */
+    .login-container {
+      width: 100%;
+      max-width: 400px;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-header {
+      font-size: 1.8rem;
+      color: #3a77c7; /* Azul médico */
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .login-subtitle {
+      font-size: 0.9rem;
+      color: #666;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* Form Fields */
+    .ui.form .field label {
+      text-align: left; /* Alinhamento à esquerda */
+      font-weight: 500;
+      color: #333;
+    }
+
+    .ui.input input {
+      border-radius: 6px !important;
+    }
+
+    .ui.input {
+      margin-bottom: 20px;
+    }
+
+    .ui.button {
+      border-radius: 6px !important;
+      background-color: #3a77c7 !important;
+      color: #fff !important;
+    }
+
+    .ui.button:hover {
+      background-color: #2e5ea6 !important;
+    }
+
+    /* Footer */
+    .login-footer {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .login-footer a {
+      color: #3a77c7;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .login-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Feedback Message */
+    #login-message {
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2 class="login-header"><i class="fas fa-user-md"></i> Consultório Médico</h2>
+    <p class="login-subtitle">Acesse sua conta para continuar</p>
+    <form id="login-form" class="ui form">
+      <div class="field">
+        <label for="username">Usuário</label>
+        <div class="ui left icon input">
+          <input type="text" id="username" name="username" placeholder="Digite seu usuário" required>
+          <i class="user icon"></i>
+        </div>
+      </div>
+      <div class="field">
+        <label for="password">Senha</label>
+        <div class="ui left icon input">
+          <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
+          <i class="lock icon"></i>
+        </div>
+      </div>
+      <button type="submit" class="ui primary fluid button">Entrar</button>
+      <div id="login-message" class="ui hidden message"></div>
+    </form>
+    <div class="login-footer">
+      <a href="#">Esqueceu sua senha?</a>
+    </div>
+  </div>
+
+  <!-- Semantic UI JS CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const messageBox = document.getElementById('login-message');
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const result = await response.json();
+
+        if (response.ok) {
+          messageBox.classList.remove('hidden', 'negative');
+          messageBox.classList.add('positive');
+          messageBox.textContent = result.message;
+          setTimeout(() => {
+            window.location.href = '/dashboard'; // Redirecionar após sucesso
+          }, 1000);
+        } else {
+          messageBox.classList.remove('hidden', 'positive');
+          messageBox.classList.add('negative');
+          messageBox.textContent = result.error;
+        }
+      } catch (error) {
+        messageBox.classList.remove('hidden', 'positive');
+        messageBox.classList.add('negative');
+        messageBox.textContent = 'Erro ao tentar logar. Tente novamente.';
+      }
+    });
+  </script>
+</body>
+</html>
